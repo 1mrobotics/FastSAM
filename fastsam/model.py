@@ -18,6 +18,8 @@ from ultralytics.yolo.utils.checks import check_imgsz
 from ultralytics.yolo.utils.torch_utils import model_info, smart_inference_mode
 from .predict import FastSAMPredictor
 
+import traceback
+
 
 class FastSAM(YOLO):
 
@@ -50,6 +52,7 @@ class FastSAM(YOLO):
         try:
             return self.predictor(source, stream=stream)
         except Exception as e:
+            traceback.print_exc()
             return None
 
     def train(self, **kwargs):
