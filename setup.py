@@ -9,9 +9,6 @@ setup(
     name="fastsam",
     version="0.1.1",
     install_requires=list(map(str, parse_requirements((Path(__file__).parent / 'requirements.txt').read_text()))),
-    package_dir= {
-        "fastsam": "fastsam",
-        "fastsam_tools": "utils",
-    },
+    packages = ['fastsam'],
     url="https://github.com/CASIA-IVA-Lab/FastSAM",
 )
