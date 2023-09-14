@@ -9,12 +9,9 @@ from PIL import Image
 
 try:
     import clip  # for linear_assignment
-
-except (ImportError, AssertionError, AttributeError):
-    from ultralytics.yolo.utils.checks import check_requirements
-
-    check_requirements('git+https://github.com/openai/CLIP.git')  # required before installing lap from source
-    import clip
+    _has_clip = True
+except ImportError:
+    _has_clip = False
 
 
 class FastSAMPrompt:
@@ -339,6 +336,7 @@ class FastSAMPrompt:
     # clip
     @torch.no_grad()
     def retrieve(self, model, preprocess, elements, search_text: str, device) -> int:
+        assert _has_clip
         preprocessed_images = [preprocess(image).to(device) for image in elements]
         tokenized_text = clip.tokenize([search_text]).to(device)
         stacked_images = torch.stack(preprocessed_images)
@@ -437,6 +435,7 @@ class FastSAMPrompt:
         return np.array([onemask])
 
     def text_prompt(self, text):
+        assert _has_clip
         if self.results == None:
             return []
         format_results = self._format_results(self.results[0], 0)

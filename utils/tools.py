@@ -5,7 +5,12 @@ import cv2
 import torch
 import os
 import sys
-import clip
+
+try:
+    import clip
+    _has_clip = True
+except ImportError:
+    _has_clip = False
 
 
 def convert_box_xywh_to_xyxy(box):
@@ -328,6 +333,7 @@ def fast_show_mask_gpu(
 def retriev(
     model, preprocess, elements: [Image.Image], search_text: str, device
 ):
+    assert _has_clip
     preprocessed_images = [preprocess(image).to(device) for image in elements]
     tokenized_text = clip.tokenize([search_text]).to(device)
     stacked_images = torch.stack(preprocessed_images)
@@ -416,6 +422,8 @@ def point_prompt(masks, points, point_label, target_height, target_width):  # nu
 
 
 def text_prompt(annotations, text, img_path, device, wider=False, threshold=0.9):
+    assert _has_clip
+
     cropped_boxes, cropped_images, not_crop, origin_id, annotations_ = crop_image(
         annotations, img_path
     )
